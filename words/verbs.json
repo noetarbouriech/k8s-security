@@ -1,0 +1,8 @@
+[
+    "run", "jump", "read", "write", "eat", "sleep", "play", "work", "study", "walk",
+    "talk", "listen", "watch", "drive", "fly", "swim", "ride", "buy", "sell", "give",
+    "take", "make", "find", "use", "see", "hear", "feel", "think", "know", "want",
+    "need", "can", "will", "shall", "may", "must", "should", "ought", "have", "be",
+    "do", "say", "get", "go", "come", "see", "take", "think", "look", "feel",
+    "mean", "tell", "show", "use", "make", "find", "give", "keep", "leave", "let"
+]
