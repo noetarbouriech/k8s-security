@@ -1,0 +1,33 @@
+name: Publish
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.23.4"
+      - uses: actions/checkout@v3
+
+      # Set up ko for building
+      - uses: ko-build/setup-ko@v0.6
+
+      # Build and push Aggregator image
+      - name: Build Aggregator
+        run: |
+          cd ./aggregator
+          ko build --base-import-paths
+
+      # Build and push Words image
+      - name: Build Words
+        run: |
+          cd ./words
+          ko build --base-import-paths
