@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aggregator-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aggregator-service
+  template:
+    metadata:
+      labels:
+        app: aggregator-service
+    spec:
+      containers:
+        - name: aggregator-service
+          image: ghcr.io/noetarbouriech/k8s-security/aggregator:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NOUN_URL
+              value: "http://nouns-service:8080/nouns" # Internal service URL
+            - name: VERB_URL
+              value: "http://verbs-service:8080/verbs" # Internal service URL
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aggregator-service
+spec:
+  selector:
+    app: aggregator-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: aggregator-gateway
+  namespace: default
+spec:
+  gatewayClassName: contour
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: aggregator-route
+  namespace: default
+spec:
+  parentRefs:
+    - name: aggregator-gateway
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /aggregator
+      backendRefs:
+        - name: aggregator-service
+          port: 8080

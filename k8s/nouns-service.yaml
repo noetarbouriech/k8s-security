@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nouns-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nouns-service
+  template:
+    metadata:
+      labels:
+        app: nouns-service
+    spec:
+      containers:
+        - name: nouns-service
+          image: ghcr.io/noetarbouriech/k8s-security/words:latest
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nouns-service
+spec:
+  selector:
+    app: nouns-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
