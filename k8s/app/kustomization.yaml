@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: app
+sortOptions:
+  order: fifo
+resources:
+  - namespace.yaml
+  - aggregator-service.yaml
+  - nouns-service.yaml
+  - verbs-service.yaml
